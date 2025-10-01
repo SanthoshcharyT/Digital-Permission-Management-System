@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Digital Permission Management System
 
 A comprehensive full-stack web application for managing college/university permission requests between students and faculty.
@@ -258,3 +259,7 @@ This project is licensed under the MIT License.
 ## Support
 
 For support and questions, please create an issue in the repository.
+=======
+# Digital-Permission-Management-System
+Digital Permission Management System is a full-stack web app built with Node.js, Express.js, MySQL, HTML, CSS, and Bootstrap. It enables students to request permissions online and faculty to approve, reject, or ask for details, replacing paperwork with a secure, efficient, and real-time digital process.
+>>>>>>> 04b1be73fe7bfc2bfdbdcf520f74161bb5f263fd
