@@ -1,0 +1,38 @@
+{
+  "name": "digital-permission-system",
+  "version": "1.0.0",
+  "description": "Digital Permission Management System for College/University",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "nodemon server.js",
+    "setup": "node setup.js",
+    "auto-setup": "node auto_setup.js",
+    "deploy": "node deploy.js",
+    "offline-setup": "node offline_setup.js"
+  },
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "connect-session-sequelize": "^7.1.7",
+    "cors": "^2.8.5",
+    "dotenv": "^16.3.1",
+    "express": "^4.18.2",
+    "express-session": "^1.17.3",
+    "jsonwebtoken": "^9.0.2",
+    "multer": "^2.0.0-rc.4",
+    "mysql2": "^3.6.5",
+    "node-fetch": "^3.3.2",
+    "socket.io": "^4.7.4"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.2"
+  },
+  "keywords": [
+    "permission",
+    "management",
+    "college",
+    "university"
+  ],
+  "author": "Digital Permission System",
+  "license": "MIT"
+}
