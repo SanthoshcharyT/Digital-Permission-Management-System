@@ -114,7 +114,6 @@ http://localhost:3000
 ### Students (Password: 12345)
 - Santhosh Chary (2311cs010647@mallareddyuniversity.ac.in)
 - Tula Kethana Patel (2311cs010640@mallareddyuniversity.ac.in)
-- Tenali Megana Reddy (2311cs010644@mallareddyuniversity.ac.in)
 - Takkala Vineesh Reddy (2311cs010640b@mallareddyuniversity.ac.in)
 
 ## Database Schema
