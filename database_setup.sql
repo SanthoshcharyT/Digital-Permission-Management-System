@@ -65,8 +65,7 @@ INSERT INTO requests (student_id, reason, date_time, status, faculty_id, categor
 -- Tula Kethana Patel (id = 2) -> Dr. Arjun Rao (id = 6) -> Personal Leave (id = 2)
 (2, 'Attending a cultural festival', '2025-09-21 09:00:00', 'Approved', 6, 2, 2),
 
--- Tenali Megana Reddy (id = 3) -> Dr. Meena Reddy (id = 5) -> Personal Leave (id = 2)
-(3, 'Going to family function in hometown', '2025-09-22 08:30:00', 'Pending', 5, 2, 3),
+
 
 -- Takkala Vineesh Reddy (id = 4) -> Dr. Arjun Rao (id = 6) -> Academic Leave (id = 3)
 (4, 'Project presentation at external college', '2025-09-23 14:00:00', 'Rejected', 6, 3, 1);
