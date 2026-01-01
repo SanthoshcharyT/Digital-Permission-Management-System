@@ -7,7 +7,7 @@ async function setupDatabase() {
     console.log('🚀 Setting up Digital Permission Management System...\n');
 
     try {
-        // Create database connection
+        // Create database connection for mYsql
         const connection = await mysql.createConnection({
             host: config.database.host,
             user: config.database.user,
