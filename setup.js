@@ -16,7 +16,8 @@ async function setupDatabase() {
 
         console.log('✅ Connected to MySQL server');
 
-        // Create database
+        // Create database 
+
         await connection.execute(`CREATE DATABASE IF NOT EXISTS ${config.database.database}`);
         console.log(`✅ Database '${config.database.database}' created/verified`);
 
