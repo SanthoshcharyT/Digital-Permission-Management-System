@@ -2,7 +2,7 @@ module.exports = {
   database: {
     host: 'localhost',
     user: 'root',
-    password: 'your-password',
+    password: '12345',
     database: 'permission_system'
   },
   jwt: {
@@ -10,4 +10,4 @@ module.exports = {
   },
   port: 3000
 };
- 
+
