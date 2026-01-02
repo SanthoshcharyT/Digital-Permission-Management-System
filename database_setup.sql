@@ -56,7 +56,6 @@ INSERT INTO request_categories (name, description) VALUES
 ('Emergency Leave', 'Leave for urgent or emergency situations requiring immediate attention'),
 ('Other', 'Any other type of leave not covered by the above categories');
 
--- Insert some sample requests
 -- Insert sample requests for new students
 INSERT INTO requests (student_id, reason, date_time, status, faculty_id, category_id, expected_duration_days) VALUES
 -- Santhosh Chary (id = 1) -> Dr. Meena Reddy (id = 5) -> Medical Leave (id = 1)
