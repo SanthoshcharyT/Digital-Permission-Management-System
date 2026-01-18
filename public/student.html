@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -12,17 +13,17 @@
             min-height: 100vh;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
-        
+
         .navbar {
             background: rgba(255, 255, 255, 0.95);
             backdrop-filter: blur(10px);
             box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
         }
-        
+
         .main-container {
             padding: 2rem 0;
         }
-        
+
         .dashboard-card {
             background: rgba(255, 255, 255, 0.95);
             backdrop-filter: blur(10px);
@@ -32,30 +33,33 @@
             margin-bottom: 2rem;
             animation: slideUp 0.6s ease-out;
         }
-        
+
         @keyframes slideUp {
             from {
                 opacity: 0;
                 transform: translateY(30px);
             }
+
             to {
                 opacity: 1;
                 transform: translateY(0);
             }
         }
-        
-        .form-control, .form-select {
+
+        .form-control,
+        .form-select {
             border: 2px solid #e9ecef;
             border-radius: 10px;
             padding: 0.75rem;
             transition: all 0.3s ease;
         }
-        
-        .form-control:focus, .form-select:focus {
+
+        .form-control:focus,
+        .form-select:focus {
             border-color: #667eea;
             box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
         }
-        
+
         .btn-primary {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             border: none;
@@ -64,12 +68,12 @@
             font-weight: 600;
             transition: all 0.3s ease;
         }
-        
+
         .btn-primary:hover {
             transform: translateY(-2px);
             box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
         }
-        
+
         .request-card {
             background: white;
             border-radius: 15px;
@@ -79,64 +83,64 @@
             transition: all 0.3s ease;
             border-left: 4px solid #e9ecef;
         }
-        
+
         .request-card:hover {
             transform: translateY(-2px);
             box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
         }
-        
+
         .request-card.pending {
             border-left-color: #ffc107;
         }
-        
+
         .request-card.approved {
             border-left-color: #28a745;
         }
-        
+
         .request-card.rejected {
             border-left-color: #dc3545;
         }
-        
+
         .request-card.need-more-info {
             border-left-color: #17a2b8;
         }
-        
+
         .status-badge {
             font-size: 0.8rem;
             padding: 0.4rem 0.8rem;
             border-radius: 20px;
             font-weight: 600;
         }
-        
+
         .status-pending {
             background: #fff3cd;
             color: #856404;
         }
-        
+
         .status-approved {
             background: #d4edda;
             color: #155724;
         }
-        
+
         .status-rejected {
             background: #f8d7da;
             color: #721c24;
         }
-        
+
         .status-need-more-info {
             background: #d1ecf1;
             color: #0c5460;
         }
-        
+
         .loading {
             display: none;
         }
-        
+
         .spinner-border-sm {
             width: 1rem;
             height: 1rem;
         }
-        
+
         .file-info {
             background: #f8f9fa;
             border-radius: 8px;
@@ -144,13 +148,13 @@
             margin-top: 0.5rem;
             font-size: 0.85rem;
         }
-        
+
         .no-requests {
             text-align: center;
             padding: 3rem;
             color: #6c757d;
         }
-        
+
         .no-requests i {
             font-size: 3rem;
             margin-bottom: 1rem;
@@ -158,6 +162,7 @@
         }
     </style>
 </head>
+
 <body>
     <nav class="navbar navbar-expand-lg navbar-light">
         <div class="container">
@@ -185,9 +190,9 @@
                         <i class="fas fa-plus-circle me-2"></i>
                         Submit New Permission Request
                     </h3>
-                    
+
                     <div id="alertContainer"></div>
-                    
+
                     <form id="requestForm">
                         <div class="mb-3">
                             <label for="category" class="form-label">Request Category</label>
@@ -195,39 +200,42 @@
                                 <option value="">Select request category...</option>
                             </select>
                         </div>
-                        
-                        
+
+
                         <div class="mb-3">
                             <label for="reason" class="form-label">Detailed Reason</label>
-                            <textarea class="form-control" id="reason" name="reason" rows="4" 
-                                placeholder="Please provide a detailed reason for your permission request..." required></textarea>
+                            <textarea class="form-control" id="reason" name="reason" rows="4"
+                                placeholder="Please provide a detailed reason for your permission request..."
+                                required></textarea>
                         </div>
-                        
+
                         <div class="mb-3">
                             <label for="dateTime" class="form-label">Start Date & Time</label>
                             <input type="datetime-local" class="form-control" id="dateTime" name="dateTime" required>
                         </div>
-                        
+
                         <div class="mb-3">
                             <label for="duration" class="form-label">Expected Duration (Days)</label>
-                            <input type="number" class="form-control" id="duration" name="duration" min="1" max="30" value="1" required>
+                            <input type="number" class="form-control" id="duration" name="duration" min="1" max="30"
+                                value="1" required>
                             <div class="form-text">How many days do you need permission for?</div>
                         </div>
-                        
+
                         <div class="mb-3">
                             <label for="faculty" class="form-label">Select Faculty Member</label>
                             <select class="form-select" id="faculty" name="faculty" required>
                                 <option value="">Choose a faculty member...</option>
                             </select>
                         </div>
-                        
+
                         <div class="mb-3">
                             <label for="file" class="form-label">Supporting Document (Optional)</label>
-                            <input type="file" class="form-control" id="file" name="file" 
+                            <input type="file" class="form-control" id="file" name="file"
                                 accept=".pdf,.doc,.docx,.jpg,.jpeg,.png,.gif">
-                            <div class="form-text">Upload medical certificates, invitations, or other supporting documents (Max 5MB)</div>
+                            <div class="form-text">Upload medical certificates, invitations, or other supporting
+                                documents (Max 5MB)</div>
                         </div>
-                        
+
                         <button type="submit" class="btn btn-primary">
                             <span class="loading">
                                 <span class="spinner-border spinner-border-sm me-2" role="status"></span>
@@ -240,7 +248,7 @@
                     </form>
                 </div>
             </div>
-            
+
             <div class="col-lg-4">
                 <div class="dashboard-card">
                     <h4 class="mb-4">
@@ -276,13 +284,13 @@
                 </div>
             </div>
         </div>
-        
+
         <div class="dashboard-card">
             <h3 class="mb-4">
                 <i class="fas fa-list me-2"></i>
                 My Permission Requests
             </h3>
-            
+
             <div id="requestsContainer">
                 <div class="text-center py-4">
                     <div class="spinner-border text-primary" role="status">
@@ -300,8 +308,8 @@
         let socket;
         let user;
 
-        // Initialize
-        document.addEventListener('DOMContentLoaded', function() {
+        // Initialize  on page load
+        document.addEventListener('DOMContentLoaded', function () {
             checkAuth();
             initializeSocket();
             loadFacultyMembers();
@@ -313,12 +321,12 @@
         function checkAuth() {
             const token = localStorage.getItem('token');
             const userData = localStorage.getItem('user');
-            
+
             if (!token || !userData) {
                 window.location.href = '/';
                 return;
             }
-            
+
             try {
                 user = JSON.parse(userData);
                 if (user.role !== 'student') {
@@ -336,8 +344,8 @@
         function initializeSocket() {
             socket = io();
             socket.emit('join_room', { role: 'student' });
-            
-            socket.on('request_updated', function(request) {
+
+            socket.on('request_updated', function (request) {
                 if (request.student_id === user.id) {
                     loadRequests();
                 }
@@ -355,7 +363,7 @@
                 if (response.ok) {
                     const faculty = await response.json();
                     const facultySelect = document.getElementById('faculty');
-                    
+
                     facultySelect.innerHTML = '<option value="">Choose a faculty member...</option>';
                     faculty.forEach(member => {
                         const option = document.createElement('option');
@@ -382,7 +390,7 @@
                 if (response.ok) {
                     const categories = await response.json();
                     const categorySelect = document.getElementById('category');
-                    
+
                     categorySelect.innerHTML = '<option value="">Select request category...</option>';
                     categories.forEach(category => {
                         const option = document.createElement('option');
@@ -413,7 +421,7 @@
             const submitBtn = document.querySelector('#requestForm button[type="submit"]');
             const loadingSpan = submitBtn.querySelector('.loading');
             const normalSpan = submitBtn.querySelector('.normal');
-            
+
             if (loading) {
                 loadingSpan.style.display = 'inline';
                 normalSpan.style.display = 'none';
@@ -429,16 +437,16 @@
             const form = document.getElementById('requestForm');
             form.addEventListener('submit', async (e) => {
                 e.preventDefault();
-                
+
                 const formData = new FormData(form);
-                
+
                 // Validate required fields
                 const reason = formData.get('reason');
                 const dateTime = formData.get('dateTime');
                 const facultyId = formData.get('faculty');
                 const categoryId = formData.get('category');
                 const duration = formData.get('duration');
-                
+
                 if (!reason || !dateTime || !facultyId || !categoryId || !duration) {
                     showAlert('Please fill in all required fields (Category, Reason, Date & Time, Duration, and Faculty Selection)');
                     setLoading(false);
@@ -502,7 +510,7 @@
 
         function displayRequests(requests) {
             const container = document.getElementById('requestsContainer');
-            
+
             if (requests.length === 0) {
                 container.innerHTML = `
                     <div class="no-requests">
@@ -584,4 +592,5 @@
         }
     </script>
 </body>
+
 </html>
