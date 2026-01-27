@@ -4,7 +4,7 @@ const path = require('path');
 const config = require('./config');
 
 async function setupDatabase() {
-    console.log('🚀 Setting up Digital Permission Management System...\n');
+    console.log('🚀 Setting up Digital Permission Management System....\n');
 
     try {
         // Create database connection for mYsql
