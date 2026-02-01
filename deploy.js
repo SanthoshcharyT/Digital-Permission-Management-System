@@ -28,7 +28,7 @@ try {
         console.log('✅ Dependencies installed successfully\n');
     } catch (installError) {
         console.log('⚠ npm install failed, trying alternative methods...\n');
-        
+
         // Try with different registry
         try {
             execSync('npm install --registry https://registry.npmjs.org/', { stdio: 'inherit' });
@@ -57,17 +57,17 @@ try {
     // Step 3: Start the application
     console.log('3️⃣ Starting the application...');
     console.log('🎉 Deployment completed successfully!\n');
-    
+
     console.log('📱 Your Digital Permission Management System is ready!');
     console.log('🌐 Access it at: http://localhost:3000\n');
-    
+
     console.log('👥 Quick Login Credentials:');
     console.log('📚 Faculty: smith@univ.com (Password: 12345)');
     console.log('🎓 Student: alice@univ.com (Password: 12345)\n');
-    
+
     console.log('💡 To start the server, run: npm start');
     console.log('💡 For development mode, run: npm run dev\n');
-    
+
     console.log('📖 For more information, check SETUP_GUIDE.md');
 
 } catch (error) {
