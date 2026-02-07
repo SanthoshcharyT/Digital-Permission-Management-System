@@ -219,7 +219,7 @@ The application uses Socket.IO to provide real-time communication:
 - Custom CSS animations
 - Smooth transitions and hover effects
 
-## Development
+## Development and modifications
 
 ### Adding New Features
 1. Update the database schema if needed
@@ -231,6 +231,7 @@ The application uses Socket.IO to provide real-time communication:
 - Modify `config.js` for different database settings
 - Update CSS in HTML files for styling changes
 - Add new user roles by updating the database schema
+
 
 ## Troubleshooting
 
