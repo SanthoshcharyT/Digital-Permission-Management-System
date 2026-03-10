@@ -1,4 +1,4 @@
--- Create database
+-- Create database to store the data for the permission system
 CREATE DATABASE IF NOT EXISTS permission_system;
 USE permission_system;
 
