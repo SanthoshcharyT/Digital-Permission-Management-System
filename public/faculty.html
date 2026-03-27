@@ -540,7 +540,7 @@
                     stats[status]++;
                 }
             });
-
+            // Update the dashboard counts
             document.getElementById('pendingCount').textContent = stats.pending;
             document.getElementById('approvedCount').textContent = stats.approved;
             document.getElementById('rejectedCount').textContent = stats.rejected;
