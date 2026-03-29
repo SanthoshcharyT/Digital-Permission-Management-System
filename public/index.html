@@ -235,7 +235,7 @@
                 email: formData.get('email'),
                 password: formData.get('password')
             };
-
+            // Basic client-side validation
             if (!loginData.role) {
                 showAlert('Please select your role');
                 return;
