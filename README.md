@@ -281,8 +281,6 @@ Digital Permission Management System is a full-stack web app built with Node.js,
 - Update for 2026-03-19 at 18:00:00
 - Update for 2026-03-20 at 10:00:00
 - Update for 2026-03-20 at 18:00:00
-- Update for 2026-03-21 at 10:00:00
-- Update for 2026-03-21 at 18:00:00
-- Update for 2026-03-24
+
 
 
