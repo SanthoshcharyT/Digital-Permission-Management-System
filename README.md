@@ -264,7 +264,7 @@ For support and questions, please create an issue in the repository or send a me
 Digital Permission Management System is a full-stack web app built with Node.js, Express.js, MySQL, HTML, CSS, and Bootstrap. It enables students to request permissions online and faculty to approve, reject, or ask for details, replacing paperwork with a secure, efficient, and real-time digital process.
  
 <<<<<<< HEAD
-- Updated on 2-04-2026
+- Updated on 3-04-2026
 =======
 
 - Update for 2026-03-14 at 10:00:00
@@ -284,8 +284,5 @@ Digital Permission Management System is a full-stack web app built with Node.js,
 - Update for 2026-03-21 at 10:00:00
 - Update for 2026-03-21 at 18:00:00
 - Update for 2026-03-24
-- Second update for 2026-03-24
-- Second update for 2026-03-25
-- Second update for 2026-03-25
-- Second update for 2026-03-25
+
 
