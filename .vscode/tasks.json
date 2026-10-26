@@ -16,7 +16,7 @@
         {
             "label": "Setup Database",
             "type": "shell",
-            "command": "npm run setup",
+            "command": "npm run db:setup",
             "group": "build",
             "presentation": {
                 "echo": true,

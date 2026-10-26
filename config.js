@@ -1,13 +1,13 @@
+require('dotenv').config();
+
 module.exports = {
   database: {
-    host: 'localhost',
-    user: 'root',
-    password: '12345',
-    database: 'permission_system'
+    // Supabase: Project Settings > Database > Connection string (URI)
+    url: process.env.DATABASE_URL,
+    ssl: process.env.DATABASE_SSL !== 'false'
   },
   jwt: {
-    secret: process.env.JWT_SECRET || 'your_secret-key'
+    secret: process.env.JWT_SECRET
   },
-  port: 3000
+  port: process.env.PORT || 3000
 };
-

@@ -6,10 +6,7 @@
   "scripts": {
     "start": "node server.js",
     "dev": "nodemon server.js",
-    "setup": "node setup.js",
-    "auto-setup": "node auto_setup.js",
-    "deploy": "node deploy.js",
-    "offline-setup": "node offline_setup.js"
+    "db:setup": "node scripts/db-setup.js"
   },
   "dependencies": {
     "bcryptjs": "^2.4.3",
@@ -20,8 +17,8 @@
     "express-session": "^1.17.3",
     "jsonwebtoken": "^9.0.2",
     "multer": "^2.0.0-rc.4",
-    "mysql2": "^3.6.5",
     "node-fetch": "^3.3.2",
+    "pg": "^8.13.1",
     "socket.io": "^4.7.4"
   },
   "devDependencies": {

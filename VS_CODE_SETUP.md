@@ -13,9 +13,9 @@ npm install
 ```
 
 ### 3. Setup Database
-The database has already been set up with the correct schema. If you need to reset it:
+The database is hosted on Supabase. Put your Supabase connection string in `.env` as `DATABASE_URL`, then create the tables (safe to run more than once):
 ```bash
-npm run setup
+npm run db:setup
 ```
 
 ### 4. Start the Server
@@ -51,7 +51,7 @@ Open your browser and go to: http://localhost:3000
 
 ### Tasks Available
 - **Install Dependencies**: Run `npm install`
-- **Setup Database**: Run `npm run setup`
+- **Setup Database**: Run `npm run db:setup`
 - **Start Server**: Run `npm start`
 - **Start Development Server**: Run `npm run dev`
 
@@ -65,10 +65,9 @@ The project includes optimized VS Code settings:
 ## 🗄️ Database Information
 
 ### Connection Details
-- **Host**: localhost
-- **User**: root
-- **Password**: 12345
-- **Database**: permission_system
+- **Database**: Supabase (PostgreSQL)
+- **Connection**: `DATABASE_URL` in `.env` (Supabase dashboard > Connect > Direct > Connection string)
+- **Schema**: `supabase/schema.sql`
 
 ### Demo Credentials
 
@@ -87,14 +86,13 @@ The project includes optimized VS Code settings:
 ### Common Issues
 
 1. **Server won't start**
-   - Check if MySQL is running
-   - Verify database credentials in `config.js`
+   - Check that `DATABASE_URL` and `JWT_SECRET` are set in `.env`
    - Check if port 3000 is available
 
 2. **Database connection error**
-   - Ensure MySQL service is running
-   - Check credentials in `config.js`
-   - Run `npm run setup` to reset database
+   - Check `DATABASE_URL` in `.env` (no square brackets around the password)
+   - Check that the Supabase project is not paused
+   - Run `npm run db:setup` to create missing tables
 
 3. **File upload issues**
    - Ensure `uploads/` directory exists
@@ -108,7 +106,7 @@ The project includes optimized VS Code settings:
 1. Check the terminal output for error messages
 2. Use VS Code debugger to step through code
 3. Check browser developer tools for frontend errors
-4. Verify database connection with MySQL client
+4. Check the data in the Supabase Table Editor
 
 ## 📁 Project Structure
 
@@ -125,7 +123,7 @@ digital-permission-system/
 ├── uploads/                 # File upload directory
 ├── server.js               # Main server file
 ├── config.js               # Configuration
-├── database_setup.sql      # Database schema
+├── supabase/schema.sql     # Database schema
 ├── package.json            # Dependencies
 └── README.md              # Project documentation
 ```
@@ -136,7 +134,7 @@ digital-permission-system/
 2. **Check console output**: Server logs provide valuable debugging info
 3. **Test both roles**: Use different browser windows for student/faculty testing
 4. **Monitor network requests**: Use browser dev tools to see API calls
-5. **Database queries**: Use MySQL client to verify data changes
+5. **Database queries**: Use the Supabase Table Editor or SQL Editor to verify data changes
 
 ## 🔄 Hot Reload
 
@@ -162,6 +160,6 @@ If you encounter issues:
 2. Review this setup guide
 3. Check the main README.md
 4. Verify all prerequisites are installed
-5. Ensure MySQL is running and accessible
+5. Ensure your Supabase project is running and reachable
 
 Happy coding! 🎉

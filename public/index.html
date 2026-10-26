@@ -1,5 +1,3 @@
-<!--index page-->
-
 <!DOCTYPE html>
 <html lang="en">
 
@@ -10,245 +8,537 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <style>
-        body {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
         }
 
-        .login-container {
+        :root {
+            --bg-dark: #0f1117;
+            --bg-panel: #13151f;
+            --bg-card: #1a1d2e;
+            --bg-input: #1e2235;
+            --border: #2a2d3e;
+            --accent: #6c63ff;
+            --accent-hover: #5a52e0;
+            --accent-muted: rgba(108, 99, 255, 0.15);
+            --text-primary: #f0f1f6;
+            --text-secondary: #8b8fa8;
+            --text-muted: #5a5f7a;
+            --highlight: #a78bfa;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg-dark);
+            color: var(--text-primary);
             min-height: 100vh;
             display: flex;
             align-items: center;
             justify-content: center;
+            overflow: hidden;
         }
 
-        .login-card {
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(10px);
-            border-radius: 20px;
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
-            padding: 3rem;
+        .page-wrapper {
+            display: flex;
             width: 100%;
-            max-width: 450px;
-            animation: slideUp 0.8s ease-out;
+            max-width: 1100px;
+            min-height: 600px;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 30px 80px rgba(0, 0, 0, 0.5);
+            margin: 1.5rem;
         }
 
-        @keyframes slideUp {
-            from {
-                opacity: 0;
-                transform: translateY(30px);
-            }
-
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+        /* ── LEFT PANEL ── */
+        .left-panel {
+            flex: 1;
+            background: var(--bg-panel);
+            padding: 3rem 2.5rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            position: relative;
+            overflow: hidden;
         }
 
-        .logo {
-            text-align: center;
-            margin-bottom: 2rem;
+        .left-panel::before {
+            content: '';
+            position: absolute;
+            width: 380px;
+            height: 380px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(108, 99, 255, 0.12) 0%, transparent 70%);
+            top: -80px;
+            left: -80px;
+            pointer-events: none;
         }
 
-        .logo i {
-            font-size: 4rem;
-            color: #667eea;
+        .left-panel::after {
+            content: '';
+            position: absolute;
+            width: 280px;
+            height: 280px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(167, 139, 250, 0.08) 0%, transparent 70%);
+            bottom: -60px;
+            right: -40px;
+            pointer-events: none;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .brand-icon {
+            width: 42px;
+            height: 42px;
+            background: var(--accent);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.1rem;
+            color: #fff;
+        }
+
+        .brand-text {
+            line-height: 1.2;
+        }
+
+        .brand-name {
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .brand-sub {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+        }
+
+        .hero {
+            position: relative;
+            z-index: 1;
+        }
+
+        .hero h1 {
+            font-size: 2.2rem;
+            font-weight: 700;
+            line-height: 1.2;
+            color: var(--text-primary);
             margin-bottom: 1rem;
         }
 
-        .logo h2 {
-            color: #333;
-            font-weight: 600;
-            margin-bottom: 0.5rem;
+        .hero h1 .accent-word {
+            color: var(--highlight);
         }
 
-        .logo p {
-            color: #666;
+        .hero p {
             font-size: 0.9rem;
+            color: var(--text-secondary);
+            line-height: 1.6;
+            max-width: 300px;
         }
 
-        .form-floating {
+        .features {
+            position: relative;
+            z-index: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 0.65rem;
+        }
+
+        .feature-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-size: 0.82rem;
+            color: var(--text-secondary);
+        }
+
+        .feature-item .feat-icon {
+            width: 30px;
+            height: 30px;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.7rem;
+            color: var(--accent);
+            flex-shrink: 0;
+        }
+
+        /* ── RIGHT PANEL ── */
+        .right-panel {
+            width: 420px;
+            flex-shrink: 0;
+            background: var(--bg-dark);
+            padding: 3rem 2.5rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .right-panel h2 {
+            font-size: 1.6rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 0.3rem;
+        }
+
+        .right-panel .sub-heading {
+            font-size: 0.82rem;
+            color: var(--text-secondary);
+            margin-bottom: 1.8rem;
+        }
+
+        /* Role toggle */
+        .role-toggle {
+            display: flex;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 4px;
             margin-bottom: 1.5rem;
+            gap: 4px;
         }
 
-        .form-control {
-            border: 2px solid #e9ecef;
-            border-radius: 10px;
-            padding: 1rem 0.75rem;
-            transition: all 0.3s ease;
-        }
-
-        .form-control:focus {
-            border-color: #667eea;
-            box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
-        }
-
-        .btn-login {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        .role-btn {
+            flex: 1;
+            padding: 0.55rem 0;
             border: none;
-            border-radius: 10px;
-            padding: 0.75rem 2rem;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            transition: all 0.3s ease;
-            width: 100%;
-        }
-
-        .btn-login:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
-        }
-
-        .alert {
-            border-radius: 10px;
-            border: none;
-            animation: fadeIn 0.5s ease-out;
-        }
-
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-            }
-
-            to {
-                opacity: 1;
-            }
-        }
-
-        .demo-credentials {
-            background: rgba(102, 126, 234, 0.1);
-            border-radius: 10px;
-            padding: 1rem;
-            margin-top: 1.5rem;
+            border-radius: 7px;
             font-size: 0.85rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            background: transparent;
+            color: var(--text-secondary);
+            font-family: 'Inter', sans-serif;
         }
 
-        .demo-credentials h6 {
-            color: #667eea;
+        .role-btn.active {
+            background: var(--bg-input);
+            color: var(--text-primary);
+            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .role-btn i {
+            margin-right: 5px;
+            font-size: 0.75rem;
+        }
+
+        /* Form fields */
+        .field-label {
+            font-size: 0.78rem;
+            font-weight: 500;
+            color: var(--text-secondary);
+            margin-bottom: 0.4rem;
+        }
+
+        .input-wrap {
+            position: relative;
+            margin-bottom: 1.1rem;
+        }
+
+        .input-wrap .input-icon {
+            position: absolute;
+            left: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-muted);
+            font-size: 0.8rem;
+            pointer-events: none;
+        }
+
+        .input-wrap input {
+            width: 100%;
+            background: var(--bg-input);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 0.7rem 0.9rem 0.7rem 2.4rem;
+            font-size: 0.88rem;
+            color: var(--text-primary);
+            font-family: 'Inter', sans-serif;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        .input-wrap input::placeholder {
+            color: var(--text-muted);
+        }
+
+        .input-wrap input:focus {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px rgba(108, 99, 255, 0.15);
+        }
+
+        .input-wrap .eye-btn {
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            cursor: pointer;
+            font-size: 0.85rem;
+            padding: 0;
+            line-height: 1;
+        }
+
+
+        /* Sign in button */
+        .btn-signin {
+            width: 100%;
+            padding: 0.75rem;
+            background: var(--bg-input);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            color: var(--text-primary);
+            font-family: 'Inter', sans-serif;
+            font-size: 0.88rem;
             font-weight: 600;
-            margin-bottom: 0.5rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
         }
 
-        .demo-credentials .credential-item {
-            margin-bottom: 0.25rem;
-            color: #555;
+        .btn-signin:hover {
+            background: #252840;
+            border-color: var(--accent);
         }
 
-        .loading {
+        .btn-signin i {
+            font-size: 0.8rem;
+        }
+
+        .help-text {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            text-align: center;
+            line-height: 1.5;
+        }
+
+        /* Alert */
+        #alertContainer .custom-alert {
+            border-radius: 8px;
+            padding: 0.65rem 0.9rem;
+            font-size: 0.82rem;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        #alertContainer .alert-danger {
+            background: rgba(220, 53, 69, 0.15);
+            border: 1px solid rgba(220, 53, 69, 0.3);
+            color: #f08080;
+        }
+
+        #alertContainer .alert-success {
+            background: rgba(40, 167, 69, 0.15);
+            border: 1px solid rgba(40, 167, 69, 0.3);
+            color: #7dda8a;
+        }
+
+        /* Spinner */
+        .spinner-sm {
+            width: 14px;
+            height: 14px;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            border-top-color: #fff;
+            border-radius: 50%;
+            animation: spin 0.7s linear infinite;
             display: none;
         }
 
-        .spinner-border-sm {
-            width: 1rem;
-            height: 1rem;
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .left-panel {
+                display: none;
+            }
+
+            .right-panel {
+                width: 100%;
+            }
+
+            .page-wrapper {
+                border-radius: 16px;
+                margin: 1rem;
+            }
         }
     </style>
 </head>
 
 <body>
-    <div class="login-container">
-        <div class="login-card">
-            <div class="logo">
-                <i class="fas fa-graduation-cap"></i>
-                <h2>Digital Permission System</h2>
-                <p>College/University Management Portal</p>
+    <div class="page-wrapper">
+
+        <!-- LEFT PANEL -->
+        <div class="left-panel">
+            <div class="brand">
+                <div class="brand-icon"><i class="fas fa-graduation-cap"></i></div>
+                <div class="brand-text">
+                    <div class="brand-name">Digital Permission</div>
+                    <div class="brand-sub">Leave &amp; permission requests</div>
+                </div>
             </div>
+
+            <div class="hero">
+                <h1>One portal for every <span class="accent-word">campus request</span></h1>
+                <p>Submit leave and permission requests online and get your faculty's decision in real time.</p>
+            </div>
+
+            <div class="features">
+                <div class="feature-item">
+                    <div class="feat-icon"><i class="fas fa-clock"></i></div>
+                    Real-time approval notifications
+                </div>
+                <div class="feature-item">
+                    <div class="feat-icon"><i class="fas fa-shield-alt"></i></div>
+                    Secure, role-based access control
+                </div>
+                <div class="feature-item">
+                    <div class="feat-icon"><i class="fas fa-file-alt"></i></div>
+                    Complete history of every request
+                </div>
+                <div class="feature-item">
+                    <div class="feat-icon"><i class="fas fa-mobile-alt"></i></div>
+                    Works on any device
+                </div>
+            </div>
+        </div>
+
+        <!-- RIGHT PANEL -->
+        <div class="right-panel">
+            <h2>Sign in to your account</h2>
+            <p class="sub-heading">Choose your role and enter your credentials</p>
 
             <div id="alertContainer"></div>
 
-            <form id="loginForm">
-                <div class="form-floating">
-                    <select class="form-select" id="role" name="role" required>
-                        <option value="">Select your role</option>
-                        <option value="student">Student</option>
-                        <option value="faculty">Faculty</option>
-                    </select>
-                    <label for="role"><i class="fas fa-user-tag me-2"></i>Role</label>
+            <!-- Role Toggle -->
+            <div class="role-toggle">
+                <button class="role-btn active" data-role="student" onclick="selectRole('student', this)">
+                    <i class="fas fa-user-graduate"></i>Student
+                </button>
+                <button class="role-btn" data-role="faculty" onclick="selectRole('faculty', this)">
+                    <i class="fas fa-chalkboard-teacher"></i>Faculty
+                </button>
+            </div>
+
+            <form id="loginForm" onsubmit="handleLogin(event)">
+                <input type="hidden" id="selectedRole" value="student">
+
+                <div class="field-label">Email address</div>
+                <div class="input-wrap">
+                    <i class="fas fa-envelope input-icon"></i>
+                    <input type="email" id="email" placeholder="Your college email" required>
                 </div>
 
-                <div class="form-floating">
-                    <input type="email" class="form-control" id="email" name="email" placeholder="Email" required>
-                    <label for="email"><i class="fas fa-envelope me-2"></i>Email Address</label>
+                <div class="field-label">Password</div>
+                <div class="input-wrap">
+                    <i class="fas fa-lock input-icon"></i>
+                    <input type="password" id="password" placeholder="Your password" required>
+                    <button type="button" class="eye-btn" onclick="togglePassword(this)">
+                        <i class="fas fa-eye"></i>
+                    </button>
                 </div>
 
-                <div class="form-floating">
-                    <input type="password" class="form-control" id="password" name="password" placeholder="Password"
-                        required>
-                    <label for="password"><i class="fas fa-lock me-2"></i>Password</label>
-                </div>
-
-                <button type="submit" class="btn btn-primary btn-login">
-                    <span class="loading">
-                        <span class="spinner-border spinner-border-sm me-2" role="status"></span>
-                        Signing in...
-                    </span>
-                    <span class="normal">
-                        <i class="fas fa-sign-in-alt me-2"></i>Sign In
-                    </span>
+                <button type="submit" class="btn-signin" id="signInBtn">
+                    <div class="spinner-sm" id="spinner"></div>
+                    <i class="fas fa-sign-in-alt" id="signInIcon"></i>
+                    <span id="signInText">Sign in</span>
                 </button>
             </form>
 
-
+            <div class="help-text">
+                Forgot your password or can't sign in? Contact your department administrator.
+            </div>
         </div>
     </div>
 
-
-
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-        const loginForm = document.getElementById('loginForm');
-        const alertContainer = document.getElementById('alertContainer');
-        const submitBtn = loginForm.querySelector('button[type="submit"]');
-        const loadingSpan = submitBtn.querySelector('.loading');
-        const normalSpan = submitBtn.querySelector('.normal');
-
-        function showAlert(message, type = 'danger') {
-            alertContainer.innerHTML = `
-                <div class="alert alert-${type} alert-dismissible fade show" role="alert">
-                    <i class="fas fa-${type === 'danger' ? 'exclamation-triangle' : 'check-circle'} me-2"></i>
-                    ${message}
-                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-                </div>
-            `;
+        // Role selection
+        function selectRole(role, btn) {
+            document.querySelectorAll('.role-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            document.getElementById('selectedRole').value = role;
         }
 
-        function setLoading(loading) {
-            if (loading) {
-                loadingSpan.style.display = 'inline';
-                normalSpan.style.display = 'none';
-                submitBtn.disabled = true;
+        // Toggle password visibility
+        function togglePassword(btn) {
+            const input = btn.closest('.input-wrap').querySelector('input');
+            const icon = btn.querySelector('i');
+            if (input.type === 'password') {
+                input.type = 'text';
+                icon.classList.replace('fa-eye', 'fa-eye-slash');
             } else {
-                loadingSpan.style.display = 'none';
-                normalSpan.style.display = 'inline';
-                submitBtn.disabled = false;
+                input.type = 'password';
+                icon.classList.replace('fa-eye-slash', 'fa-eye');
             }
         }
 
-        loginForm.addEventListener('submit', async (e) => {
+        // Alert helper
+        function showAlert(message, type = 'danger') {
+            document.getElementById('alertContainer').innerHTML = `
+                <div class="custom-alert alert-${type}">
+                    <i class="fas fa-${type === 'danger' ? 'exclamation-circle' : 'check-circle'}"></i>
+                    ${message}
+                </div>`;
+        }
+
+        // Loading state
+        function setLoading(loading) {
+            const btn = document.getElementById('signInBtn');
+            const icon = document.getElementById('signInIcon');
+            const text = document.getElementById('signInText');
+            const spin = document.getElementById('spinner');
+            btn.disabled = loading;
+            spin.style.display = loading ? 'block' : 'none';
+            icon.style.display = loading ? 'none' : 'inline';
+            text.textContent = loading ? 'Signing in...' : 'Sign in';
+        }
+
+        // Login handler
+        async function handleLogin(e) {
             e.preventDefault();
 
-            const formData = new FormData(loginForm);
             const loginData = {
-                role: formData.get('role'),
-                email: formData.get('email'),
-                password: formData.get('password')
+                role: document.getElementById('selectedRole').value,
+                email: document.getElementById('email').value,
+                password: document.getElementById('password').value
             };
-            // Basic client-side validation
-            if (!loginData.role) {
-                showAlert('Please select your role');
-                return;
-            }
 
             setLoading(true);
 
             try {
                 const response = await fetch('/api/login', {
                     method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
+                    headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(loginData)
                 });
 
@@ -257,39 +547,29 @@
                 if (response.ok) {
                     localStorage.setItem('token', data.token);
                     localStorage.setItem('user', JSON.stringify(data.user));
-
                     showAlert('Login successful! Redirecting...', 'success');
-
                     setTimeout(() => {
-                        if (data.user.role === 'student') {
-                            window.location.href = '/student';
-                        } else {
-                            window.location.href = '/faculty';
-                        }
+                        window.location.href = data.user.role === 'student' ? '/student' : '/faculty';
                     }, 1000);
                 } else {
-                    showAlert(data.error || 'Login failed');
+                    showAlert(data.error || 'Login failed. Please check your credentials.');
                 }
-            } catch (error) {
-                console.error('Login error:', error);
+            } catch (err) {
+                console.error(err);
                 showAlert('Network error. Please try again.');
             } finally {
                 setLoading(false);
             }
-        });
+        }
 
+        // Auto-redirect if already logged in
         const token = localStorage.getItem('token');
         const user = localStorage.getItem('user');
-
         if (token && user) {
             try {
-                const userData = JSON.parse(user);
-                if (userData.role === 'student') {
-                    window.location.href = '/student';
-                } else {
-                    window.location.href = '/faculty';
-                }
-            } catch (error) {
+                const u = JSON.parse(user);
+                window.location.href = u.role === 'student' ? '/student' : '/faculty';
+            } catch {
                 localStorage.removeItem('token');
                 localStorage.removeItem('user');
             }

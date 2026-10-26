@@ -15,10 +15,10 @@
             ]
         },
         {
-            "name": "Launch Setup",
+            "name": "Launch Database Setup",
             "type": "node",
             "request": "launch",
-            "program": "${workspaceFolder}/setup.js",
+            "program": "${workspaceFolder}/scripts/db-setup.js",
             "console": "integratedTerminal",
             "skipFiles": [
                 "<node_internals>/**"

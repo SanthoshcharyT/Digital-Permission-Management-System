@@ -1,5 +1,4 @@
 const express = require('express');
-const mysql = require('mysql2/promise');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const multer = require('multer');
@@ -8,6 +7,18 @@ const http = require('http');
 const socketIo = require('socket.io');
 const cors = require('cors');
 const config = require('./config');
+
+if (!config.jwt.secret) {
+  console.error('JWT_SECRET is not set. Copy .env.example to .env and set it.');
+  process.exit(1);
+}
+
+if (!config.database.url) {
+  console.error('DATABASE_URL is not set. Add your Supabase connection string to .env.');
+  process.exit(1);
+}
+
+const pool = require('./db');
 
 const app = express();
 const server = http.createServer(app);
@@ -29,19 +40,6 @@ const fs = require('fs');
 if (!fs.existsSync('uploads')) {
   fs.mkdirSync('uploads');
 }
-
-// Database connection
-const dbConfig = {
-  host: config.database.host,
-  user: config.database.user,
-  password: config.database.password,
-  database: config.database.database,
-  waitForConnections: true,
-  connectionLimit: 10,
-  queueLimit: 0
-};
-
-const pool = mysql.createPool(dbConfig);
 
 // Multer configuration for file uploads
 const storage = multer.diskStorage({
@@ -101,8 +99,8 @@ app.post('/api/login', async (req, res) => {
       return res.status(400).json({ error: 'Email, password, and role are required' });
     }
 
-    const [rows] = await pool.execute(
-      'SELECT * FROM users WHERE email = ? AND role = ?',
+    const { rows } = await pool.query(
+      'SELECT * FROM users WHERE email = $1 AND role = $2',
       [email, role]
     );
 
@@ -172,8 +170,8 @@ app.post('/api/requests', authenticateToken, upload.single('file'), async (req, 
     }
 
     // Verify the selected faculty exists and is actually a faculty member
-    const [facultyCheck] = await pool.execute(
-      'SELECT id, name FROM users WHERE id = ? AND role = ?',
+    const { rows: facultyCheck } = await pool.query(
+      'SELECT id, name FROM users WHERE id = $1 AND role = $2',
       [facultyId, 'faculty']
     );
 
@@ -183,14 +181,15 @@ app.post('/api/requests', authenticateToken, upload.single('file'), async (req, 
 
     const filePath = req.file ? req.file.path : null;
 
-    const [result] = await pool.execute(
-      'INSERT INTO requests (student_id, reason, date_time, file_path, faculty_id, category_id, expected_duration_days) VALUES (?, ?, ?, ?, ?, ?, ?)',
+    const { rows: inserted } = await pool.query(
+      'INSERT INTO requests (student_id, reason, date_time, file_path, faculty_id, category_id, expected_duration_days) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING id',
       [studentId, reason, requestDateTime, filePath, facultyId, categoryId, expectedDurationDays]
     );
+    const requestId = inserted[0].id;
 
     // Emit real-time update to specific faculty member
     io.to(`faculty_${facultyId}`).emit('new_request', {
-      id: result.insertId,
+      id: requestId,
       student_id: studentId,
       student_name: req.user.name,
       reason,
@@ -198,12 +197,12 @@ app.post('/api/requests', authenticateToken, upload.single('file'), async (req, 
       file_path: filePath,
       faculty_id: facultyId,
       faculty_name: facultyCheck[0].name,
-      status: 'pending'
+      status: 'Pending'
     });
 
     res.json({
       message: 'Request submitted successfully',
-      requestId: result.insertId
+      requestId
     });
   } catch (error) {
     console.error('Submit request error:', error);
@@ -218,8 +217,8 @@ app.get('/api/student/requests', authenticateToken, async (req, res) => {
       return res.status(403).json({ error: 'Access denied' });
     }
 
-    const [rows] = await pool.execute(
-      'SELECT * FROM requests WHERE student_id = ? ORDER BY created_at DESC',
+    const { rows } = await pool.query(
+      'SELECT * FROM requests WHERE student_id = $1 ORDER BY created_at DESC',
       [req.user.id]
     );
 
@@ -237,11 +236,11 @@ app.get('/api/faculty/requests', authenticateToken, async (req, res) => {
       return res.status(403).json({ error: 'Access denied' });
     }
 
-    const [rows] = await pool.execute(`
-      SELECT r.*, u.name as student_name, u.email as student_email 
-      FROM requests r 
-      JOIN users u ON r.student_id = u.id 
-      WHERE r.faculty_id = ?
+    const { rows } = await pool.query(`
+      SELECT r.*, u.name as student_name, u.email as student_email
+      FROM requests r
+      JOIN users u ON r.student_id = u.id
+      WHERE r.faculty_id = $1
       ORDER BY r.created_at DESC
     `, [req.user.id]);
 
@@ -266,35 +265,26 @@ app.put('/api/requests/:id/status', authenticateToken, async (req, res) => {
       return res.status(400).json({ error: 'Invalid status' });
     }
 
-    // Convert status to lowercase to match database ENUM
-    const statusMap = {
-      'Pending': 'pending',
-      'Approved': 'approved',
-      'Rejected': 'rejected',
-      'Need More Info': 'need_more_info'
-    };
-
-    const dbStatus = statusMap[status];
-
-    const [result] = await pool.execute(
-      'UPDATE requests SET status = ?, faculty_comment = ? WHERE id = ?',
-      [dbStatus, comment, id]
+    // Only the faculty member the request was sent to may update it
+    const result = await pool.query(
+      'UPDATE requests SET status = $1, faculty_comment = $2 WHERE id = $3 AND faculty_id = $4',
+      [status, comment || null, id, req.user.id]
     );
 
-    if (result.affectedRows === 0) {
+    if (result.rowCount === 0) {
       return res.status(404).json({ error: 'Request not found' });
     }
 
     // Get updated request with student info
-    const [updatedRequest] = await pool.execute(`
-      SELECT r.*, u.name as student_name, u.email as student_email 
-      FROM requests r 
-      JOIN users u ON r.student_id = u.id 
-      WHERE r.id = ?
+    const { rows: updatedRequest } = await pool.query(`
+      SELECT r.*, u.name as student_name, u.email as student_email
+      FROM requests r
+      JOIN users u ON r.student_id = u.id
+      WHERE r.id = $1
     `, [id]);
 
-    // Emit real-time update to student
-    io.emit('request_updated', updatedRequest[0]);
+    // Emit real-time update only to the student who owns the request
+    io.to(`student_${updatedRequest[0].student_id}`).emit('request_updated', updatedRequest[0]);
 
     res.json({ message: 'Request status updated successfully' });
   } catch (error) {
@@ -321,8 +311,8 @@ app.get('/api/profile', authenticateToken, async (req, res) => {
 // Get list of faculty members
 app.get('/api/faculty', authenticateToken, async (req, res) => {
   try {
-    const [rows] = await pool.execute(
-      'SELECT id, name, email FROM users WHERE role = ? ORDER BY name',
+    const { rows } = await pool.query(
+      'SELECT id, name, email FROM users WHERE role = $1 ORDER BY name',
       ['faculty']
     );
 
@@ -336,7 +326,7 @@ app.get('/api/faculty', authenticateToken, async (req, res) => {
 // Get request categories
 app.get('/api/categories', authenticateToken, async (req, res) => {
   try {
-    const [rows] = await pool.execute(
+    const { rows } = await pool.query(
       'SELECT * FROM request_categories ORDER BY name'
     );
 
@@ -347,19 +337,27 @@ app.get('/api/categories', authenticateToken, async (req, res) => {
   }
 });
 
+// Socket.IO authentication: identity comes from the JWT, not from the client
+io.use((socket, next) => {
+  const token = socket.handshake.auth && socket.handshake.auth.token;
+  if (!token) {
+    return next(new Error('Access token required'));
+  }
+  jwt.verify(token, config.jwt.secret, (err, user) => {
+    if (err) {
+      return next(new Error('Invalid or expired token'));
+    }
+    socket.user = user;
+    next();
+  });
+});
+
 // Socket.IO connection handling
 io.on('connection', (socket) => {
   console.log('User connected:', socket.id);
 
-  socket.on('join_room', (data) => {
-    if (data.role === 'student') {
-      socket.join('students');
-    } else if (data.role === 'faculty') {
-      socket.join('faculty');
-      // Join specific faculty room for targeted notifications
-      socket.join(`faculty_${data.userId}`);
-    }
-  });
+  // Each user joins a private room for targeted notifications
+  socket.join(`${socket.user.role}_${socket.user.id}`);
 
   socket.on('disconnect', () => {
     console.log('User disconnected:', socket.id);

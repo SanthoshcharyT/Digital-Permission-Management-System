@@ -182,8 +182,8 @@ curl http://localhost:3000
 3. Check console: `F12` → Console tab
 
 ### **If Database Error:**
-1. Make sure MySQL is running
-2. Check credentials in `config.js`
+1. Make sure your Supabase project is not paused
+2. Check `DATABASE_URL` in `.env`
 
 ---
 

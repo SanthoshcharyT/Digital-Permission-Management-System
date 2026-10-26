@@ -1,316 +1,735 @@
-<!--student dashboard-->
-
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Student Dashboard -Digital Permission System</title>
+    <title>Student Dashboard - Digital Permission System</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        :root {
+            --bg-dark: #0f1117;
+            --bg-panel: #13151f;
+            --bg-card: #1a1d2e;
+            --bg-input: #1e2235;
+            --border: #2a2d3e;
+            --accent: #6c63ff;
+            --accent-hover: #5a52e0;
+            --accent-muted: rgba(108, 99, 255, 0.15);
+            --text-primary: #f0f1f6;
+            --text-secondary: #8b8fa8;
+            --text-muted: #5a5f7a;
+            --highlight: #a78bfa;
+            --success: #22c55e;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --info: #38bdf8;
+        }
+
         body {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            font-family: 'Inter', sans-serif;
+            background: var(--bg-dark);
+            color: var(--text-primary);
             min-height: 100vh;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
 
-        .navbar {
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(10px);
-            box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
+        /* ── NAVBAR ── */
+        .top-nav {
+            background: var(--bg-panel);
+            border-bottom: 1px solid var(--border);
+            padding: 0.85rem 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 100;
         }
 
-        .main-container {
-            padding: 2rem 0;
+        .nav-brand {
+            display: flex;
+            align-items: center;
+            gap: 0.7rem;
         }
 
-        .dashboard-card {
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(10px);
-            border-radius: 20px;
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
-            padding: 2rem;
-            margin-bottom: 2rem;
-            animation: slideUp 0.6s ease-out;
+        .nav-brand .brand-icon {
+            width: 36px;
+            height: 36px;
+            background: var(--accent);
+            border-radius: 9px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.9rem;
+            color: #fff;
         }
 
-        @keyframes slideUp {
-            from {
-                opacity: 0;
-                transform: translateY(30px);
-            }
-
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+        .nav-brand .brand-name {
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: var(--text-primary);
         }
 
-        .form-control,
-        .form-select {
-            border: 2px solid #e9ecef;
+        .nav-right {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .welcome-text {
+            font-size: 0.82rem;
+            color: var(--text-secondary);
+        }
+
+        .welcome-text span {
+            color: var(--text-primary);
+            font-weight: 500;
+        }
+
+        .btn-logout {
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+            padding: 0.45rem 0.9rem;
+            background: transparent;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            color: var(--text-secondary);
+            font-family: 'Inter', sans-serif;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-logout:hover {
+            border-color: var(--danger);
+            color: var(--danger);
+        }
+
+        /* ── LAYOUT ── */
+        .main-wrap {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem 1.5rem;
+        }
+
+        .page-title {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 1.5rem;
+        }
+
+        .page-title span {
+            color: var(--highlight);
+        }
+
+        /* ── STAT CARDS ── */
+        .stats-row {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .stat-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: 1.1rem 1.2rem;
+            display: flex;
+            align-items: center;
+            gap: 0.9rem;
+        }
+
+        .stat-icon {
+            width: 42px;
+            height: 42px;
             border-radius: 10px;
-            padding: 0.75rem;
-            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+            flex-shrink: 0;
         }
 
-        .form-control:focus,
-        .form-select:focus {
-            border-color: #667eea;
-            box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+        .stat-icon.warning {
+            background: rgba(245, 158, 11, 0.15);
+            color: var(--warning);
         }
 
-        .btn-primary {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        .stat-icon.success {
+            background: rgba(34, 197, 94, 0.15);
+            color: var(--success);
+        }
+
+        .stat-icon.danger {
+            background: rgba(239, 68, 68, 0.15);
+            color: var(--danger);
+        }
+
+        .stat-icon.info {
+            background: rgba(56, 189, 248, 0.15);
+            color: var(--info);
+        }
+
+        .stat-val {
+            font-size: 1.5rem;
+            font-weight: 700;
+            line-height: 1;
+        }
+
+        .stat-val.warning {
+            color: var(--warning);
+        }
+
+        .stat-val.success {
+            color: var(--success);
+        }
+
+        .stat-val.danger {
+            color: var(--danger);
+        }
+
+        .stat-val.info {
+            color: var(--info);
+        }
+
+        .stat-label {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            margin-top: 2px;
+        }
+
+        /* ── CARDS ── */
+        .card-dark {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 1.6rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .card-heading {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 1.3rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .card-heading i {
+            color: var(--accent);
+        }
+
+        /* ── FORM ── */
+        .field-label {
+            font-size: 0.78rem;
+            font-weight: 500;
+            color: var(--text-secondary);
+            margin-bottom: 0.4rem;
+        }
+
+        .form-row {
+            margin-bottom: 1rem;
+        }
+
+        .dark-input,
+        .dark-select,
+        .dark-textarea {
+            width: 100%;
+            background: var(--bg-input);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 0.7rem 0.9rem;
+            font-size: 0.87rem;
+            color: var(--text-primary);
+            font-family: 'Inter', sans-serif;
+            outline: none;
+            transition: border-color 0.2s, box-shadow 0.2s;
+            appearance: none;
+        }
+
+        .dark-input::placeholder,
+        .dark-textarea::placeholder {
+            color: var(--text-muted);
+        }
+
+        .dark-input:focus,
+        .dark-select:focus,
+        .dark-textarea:focus {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px rgba(108, 99, 255, 0.15);
+        }
+
+        .dark-select {
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%238b8fa8' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
+            background-repeat: no-repeat;
+            background-position: right 0.7rem center;
+            background-size: 1.2em;
+            padding-right: 2.4rem;
+        }
+
+        .dark-select option {
+            background: var(--bg-card);
+            color: var(--text-primary);
+        }
+
+        .dark-textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        .form-hint {
+            font-size: 0.73rem;
+            color: var(--text-muted);
+            margin-top: 0.3rem;
+        }
+
+        .two-col {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+
+        /* File upload */
+        .file-upload-wrap {
+            position: relative;
+        }
+
+        .file-upload-wrap input[type="file"] {
+            width: 100%;
+            background: var(--bg-input);
+            border: 1px dashed var(--border);
+            border-radius: 10px;
+            padding: 0.7rem 0.9rem;
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            font-family: 'Inter', sans-serif;
+            cursor: pointer;
+            outline: none;
+        }
+
+        .file-upload-wrap input[type="file"]:hover {
+            border-color: var(--accent);
+        }
+
+        /* Submit button */
+        .btn-submit {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.72rem 1.6rem;
+            background: var(--accent);
             border: none;
             border-radius: 10px;
-            padding: 0.75rem 1.5rem;
+            color: #fff;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.88rem;
             font-weight: 600;
-            transition: all 0.3s ease;
+            cursor: pointer;
+            transition: all 0.2s;
         }
 
-        .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+        .btn-submit:hover {
+            background: var(--accent-hover);
+            transform: translateY(-1px);
+            box-shadow: 0 8px 20px rgba(108, 99, 255, 0.3);
         }
 
-        .request-card {
-            background: white;
-            border-radius: 15px;
-            padding: 1.5rem;
-            margin-bottom: 1rem;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
-            transition: all 0.3s ease;
-            border-left: 4px solid #e9ecef;
+        .btn-submit:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
         }
 
-        .request-card:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
-        }
-
-        .request-card.pending {
-            border-left-color: #ffc107;
-        }
-
-        .request-card.approved {
-            border-left-color: #28a745;
-        }
-
-        .request-card.rejected {
-            border-left-color: #dc3545;
-        }
-
-        .request-card.need-more-info {
-            border-left-color: #17a2b8;
-        }
-
-        .status-badge {
-            font-size: 0.8rem;
-            padding: 0.4rem 0.8rem;
-            border-radius: 20px;
-            font-weight: 600;
-        }
-
-        .status-pending {
-            background: #fff3cd;
-            color: #856404;
-        }
-
-        .status-approved {
-            background: #d4edda;
-            color: #155724;
-        }
-
-        .status-rejected {
-            background: #f8d7da;
-            color: #721c24;
-        }
-
-        .status-need-more-info {
-            background: #d1ecf1;
-            color: #0c5460;
-        }
-
-        .loading {
+        .spinner-sm {
+            width: 14px;
+            height: 14px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-top-color: #fff;
+            border-radius: 50%;
+            animation: spin 0.7s linear infinite;
             display: none;
         }
 
-        .spinner-border-sm {
-            width: 1rem;
-            height: 1rem;
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
         }
 
-        .file-info {
-            background: #f8f9fa;
+        /* ── ALERT ── */
+        #alertContainer .custom-alert {
+            border-radius: 10px;
+            padding: 0.7rem 1rem;
+            font-size: 0.83rem;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .custom-alert.alert-danger {
+            background: rgba(239, 68, 68, 0.12);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            color: #f98080;
+        }
+
+        .custom-alert.alert-success {
+            background: rgba(34, 197, 94, 0.12);
+            border: 1px solid rgba(34, 197, 94, 0.3);
+            color: #6ee7a0;
+        }
+
+        /* ── REQUEST CARDS ── */
+        .request-item {
+            background: var(--bg-input);
+            border: 1px solid var(--border);
+            border-left: 4px solid var(--border);
+            border-radius: 12px;
+            padding: 1.1rem 1.2rem;
+            margin-bottom: 0.85rem;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .request-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+        }
+
+        .request-item.pending {
+            border-left-color: var(--warning);
+        }
+
+        .request-item.approved {
+            border-left-color: var(--success);
+        }
+
+        .request-item.rejected {
+            border-left-color: var(--danger);
+        }
+
+        .request-item.need-more-info {
+            border-left-color: var(--info);
+        }
+
+        .req-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.5rem;
+        }
+
+        .req-id {
+            font-size: 0.82rem;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .status-badge {
+            font-size: 0.72rem;
+            font-weight: 600;
+            padding: 0.3rem 0.7rem;
+            border-radius: 20px;
+        }
+
+        .badge-pending {
+            background: rgba(245, 158, 11, 0.15);
+            color: var(--warning);
+        }
+
+        .badge-approved {
+            background: rgba(34, 197, 94, 0.15);
+            color: var(--success);
+        }
+
+        .badge-rejected {
+            background: rgba(239, 68, 68, 0.15);
+            color: var(--danger);
+        }
+
+        .badge-need-more-info {
+            background: rgba(56, 189, 248, 0.15);
+            color: var(--info);
+        }
+
+        .req-reason {
+            font-size: 0.83rem;
+            color: var(--text-secondary);
+            margin-bottom: 0.6rem;
+            line-height: 1.5;
+        }
+
+        .req-meta {
+            display: flex;
+            gap: 1.2rem;
+            flex-wrap: wrap;
+        }
+
+        .req-meta span {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+        }
+
+        .req-meta i {
+            color: var(--text-muted);
+        }
+
+        .req-file {
+            margin-top: 0.6rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            font-size: 0.78rem;
+            color: var(--accent);
+            text-decoration: none;
+            background: var(--accent-muted);
+            padding: 0.3rem 0.7rem;
+            border-radius: 6px;
+        }
+
+        .req-comment {
+            margin-top: 0.7rem;
+            padding: 0.6rem 0.8rem;
+            background: var(--bg-card);
             border-radius: 8px;
-            padding: 0.5rem;
-            margin-top: 0.5rem;
+            font-size: 0.78rem;
+            color: var(--text-secondary);
+            border-left: 3px solid var(--accent);
+        }
+
+        .req-comment strong {
+            color: var(--text-primary);
+        }
+
+        /* Empty state */
+        .empty-state {
+            text-align: center;
+            padding: 3rem 1rem;
+            color: var(--text-muted);
+        }
+
+        .empty-state i {
+            font-size: 2.5rem;
+            margin-bottom: 0.8rem;
+            opacity: 0.4;
+        }
+
+        .empty-state h6 {
+            color: var(--text-secondary);
+            margin-bottom: 0.3rem;
+        }
+
+        .empty-state p {
+            font-size: 0.83rem;
+        }
+
+        /* Loading spinner */
+        .page-loader {
+            text-align: center;
+            padding: 2rem;
+            color: var(--text-muted);
             font-size: 0.85rem;
         }
 
-        .no-requests {
-            text-align: center;
-            padding: 3rem;
-            color: #6c757d;
+        .page-loader .spin-ring {
+            width: 28px;
+            height: 28px;
+            border: 3px solid var(--border);
+            border-top-color: var(--accent);
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            margin: 0 auto 0.6rem;
         }
 
-        .no-requests i {
-            font-size: 3rem;
-            margin-bottom: 1rem;
-            opacity: 0.5;
+        /* Responsive */
+        @media (max-width: 768px) {
+            .stats-row {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .two-col {
+                grid-template-columns: 1fr;
+            }
+
+            .top-nav {
+                padding: 0.75rem 1rem;
+            }
+
+            .main-wrap {
+                padding: 1.2rem 1rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .stats-row {
+                grid-template-columns: repeat(2, 1fr);
+            }
         }
     </style>
 </head>
 
 <body>
-    <nav class="navbar navbar-expand-lg navbar-light">
-        <div class="container">
-            <a class="navbar-brand fw-bold" href="#">
-                <i class="fas fa-graduation-cap me-2"></i>
-                Digital Permission System
-            </a>
-            <div class="navbar-nav ms-auto">
-                <span class="navbar-text me-3">
-                    <i class="fas fa-user me-2"></i>
-                    Welcome, <span id="studentName">Student</span>
-                </span>
-                <button class="btn btn-outline-danger btn-sm" onclick="logout()">
-                    <i class="fas fa-sign-out-alt me-2"></i>Logout
-                </button>
-            </div>
+
+    <!-- NAVBAR -->
+    <nav class="top-nav">
+        <div class="nav-brand">
+            <div class="brand-icon"><i class="fas fa-graduation-cap"></i></div>
+            <div class="brand-name">Digital Permission System</div>
+        </div>
+        <div class="nav-right">
+            <div class="welcome-text">Welcome, <span id="studentName">Student</span></div>
+            <button class="btn-logout" onclick="logout()">
+                <i class="fas fa-sign-out-alt"></i> Logout
+            </button>
         </div>
     </nav>
 
-    <div class="container main-container">
-        <div class="row">
-            <div class="col-lg-8">
-                <div class="dashboard-card">
-                    <h3 class="mb-4">
-                        <i class="fas fa-plus-circle me-2"></i>
-                        Submit New Permission Request
-                    </h3>
+    <!-- MAIN -->
+    <div class="main-wrap">
+
+        <div class="page-title">Student <span>Dashboard</span></div>
+
+        <!-- STATS -->
+        <div class="stats-row">
+            <div class="stat-card">
+                <div class="stat-icon warning"><i class="fas fa-hourglass-half"></i></div>
+                <div>
+                    <div class="stat-val warning" id="pendingCount">0</div>
+                    <div class="stat-label">Pending</div>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon success"><i class="fas fa-check-circle"></i></div>
+                <div>
+                    <div class="stat-val success" id="approvedCount">0</div>
+                    <div class="stat-label">Approved</div>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon danger"><i class="fas fa-times-circle"></i></div>
+                <div>
+                    <div class="stat-val danger" id="rejectedCount">0</div>
+                    <div class="stat-label">Rejected</div>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon info"><i class="fas fa-info-circle"></i></div>
+                <div>
+                    <div class="stat-val info" id="needInfoCount">0</div>
+                    <div class="stat-label">Need Info</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row g-4">
+
+            <!-- FORM -->
+            <div class="col-lg-7">
+                <div class="card-dark">
+                    <div class="card-heading">
+                        <i class="fas fa-plus-circle"></i> Submit New Permission Request
+                    </div>
 
                     <div id="alertContainer"></div>
 
                     <form id="requestForm">
-                        <div class="mb-3">
-                            <label for="category" class="form-label">Request Category</label>
-                            <select class="form-select" id="category" name="category" required>
+
+                        <div class="form-row">
+                            <div class="field-label">Request Category</div>
+                            <select class="dark-select" id="category" name="category" required>
                                 <option value="">Select request category...</option>
                             </select>
                         </div>
 
-                        <div class="mb-3">
-                            <label for="reason" class="form-label">Detailed Reason</label>
-                            <textarea class="form-control" id="reason" name="reason" rows="4"
+                        <div class="form-row">
+                            <div class="field-label">Detailed Reason</div>
+                            <textarea class="dark-textarea" id="reason" name="reason"
                                 placeholder="Please provide a detailed reason for your permission request..."
                                 required></textarea>
                         </div>
 
-                        <div class="mb-3">
-                            <label for="dateTime" class="form-label">Start Date & Time</label>
-                            <input type="datetime-local" class="form-control" id="dateTime" name="dateTime" required>
+                        <div class="two-col">
+                            <div class="form-row">
+                                <div class="field-label">Start Date &amp; Time</div>
+                                <input type="datetime-local" class="dark-input" id="dateTime" name="dateTime" required>
+                            </div>
+                            <div class="form-row">
+                                <div class="field-label">Duration (Days)</div>
+                                <input type="number" class="dark-input" id="duration" name="duration" min="1" max="30"
+                                    value="1" required>
+                                <div class="form-hint">How many days do you need?</div>
+                            </div>
                         </div>
 
-                        <div class="mb-3">
-                            <label for="duration" class="form-label">Expected Duration (Days)</label>
-                            <input type="number" class="form-control" id="duration" name="duration" min="1" max="30"
-                                value="1" required>
-                            <div class="form-text">How many days do you need permission for?</div>
-                        </div>
-
-                        <div class="mb-3">
-                            <label for="faculty" class="form-label">Select Faculty Member</label>
-                            <select class="form-select" id="faculty" name="faculty" required>
+                        <div class="form-row">
+                            <div class="field-label">Select Faculty Member</div>
+                            <select class="dark-select" id="faculty" name="faculty" required>
                                 <option value="">Choose a faculty member...</option>
                             </select>
                         </div>
 
-                        <div class="mb-3">
-                            <label for="file" class="form-label">Supporting Document (Optional)</label>
-                            <input type="file" class="form-control" id="file" name="file"
-                                accept=".pdf,.doc,.docx,.jpg,.jpeg,.png,.gif">
-                            <div class="form-text">Upload medical certificates, invitations, or other supporting
-                                documents (Max 5MB)</div>
+                        <div class="form-row">
+                            <div class="field-label">Supporting Document <span
+                                    style="color:var(--text-muted)">(Optional)</span></div>
+                            <div class="file-upload-wrap">
+                                <input type="file" id="file" name="file" accept=".pdf,.doc,.docx,.jpg,.jpeg,.png,.gif">
+                            </div>
+                            <div class="form-hint">Upload medical certificates, invitations, or other docs (Max 5MB)
+                            </div>
                         </div>
 
-                        <button type="submit" class="btn btn-primary">
-                            <span class="loading">
-                                <span class="spinner-border spinner-border-sm me-2" role="status"></span>
-                                Submitting...
-                            </span>
-                            <span class="normal">
-                                <i class="fas fa-paper-plane me-2"></i>Submit Request
-                            </span>
+                        <button type="submit" class="btn-submit" id="submitBtn">
+                            <div class="spinner-sm" id="spinner"></div>
+                            <i class="fas fa-paper-plane" id="submitIcon"></i>
+                            <span id="submitText">Submit Request</span>
                         </button>
+
                     </form>
                 </div>
             </div>
 
-            <div class="col-lg-4">
-                <div class="dashboard-card">
-                    <h4 class="mb-4">
-                        <i class="fas fa-chart-pie me-2"></i>
-                        Request Statistics
-                    </h4>
-                    <div class="row text-center">
-                        <div class="col-6 mb-3">
-                            <div class="p-3 bg-warning bg-opacity-10 rounded">
-                                <h5 class="text-warning mb-1" id="pendingCount">0</h5>
-                                <small class="text-muted">Pending</small>
-                            </div>
-                        </div>
-                        <div class="col-6 mb-3">
-                            <div class="p-3 bg-success bg-opacity-10 rounded">
-                                <h5 class="text-success mb-1" id="approvedCount">0</h5>
-                                <small class="text-muted">Approved</small>
-                            </div>
-                        </div>
-                        <div class="col-6">
-                            <div class="p-3 bg-danger bg-opacity-10 rounded">
-                                <h5 class="text-danger mb-1" id="rejectedCount">0</h5>
-                                <small class="text-muted">Rejected</small>
-                            </div>
-                        </div>
-                        <div class="col-6">
-                            <div class="p-3 bg-info bg-opacity-10 rounded">
-                                <h5 class="text-info mb-1" id="needInfoCount">0</h5>
-                                <small class="text-muted">Need Info</small>
-                            </div>
+            <!-- REQUEST LIST -->
+            <div class="col-lg-5">
+                <div class="card-dark">
+                    <div class="card-heading">
+                        <i class="fas fa-list-ul"></i> My Permission Requests
+                    </div>
+                    <div id="requestsContainer">
+                        <div class="page-loader">
+                            <div class="spin-ring"></div>
+                            Loading your requests...
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
 
-        <div class="dashboard-card">
-            <h3 class="mb-4">
-                <i class="fas fa-list me-2"></i>
-                My Permission Requests
-            </h3>
-
-            <div id="requestsContainer">
-                <div class="text-center py-4">
-                    <div class="spinner-border text-primary" role="status">
-                        <span class="visually-hidden">Loading...</span>
-                    </div>
-                    <p class="mt-2 text-muted">Loading your requests...</p>
-                </div>
-            </div>
         </div>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="/socket.io/socket.io.js"></script>
     <script>
-        let socket;
-        let user;
+        let socket, user;
 
-        // Initialize  on page load
-        document.addEventListener('DOMContentLoaded', function () {
+        document.addEventListener('DOMContentLoaded', () => {
             checkAuth();
             initializeSocket();
             loadFacultyMembers();
@@ -322,20 +741,12 @@
         function checkAuth() {
             const token = localStorage.getItem('token');
             const userData = localStorage.getItem('user');
-
-            if (!token || !userData) {
-                window.location.href = '/';
-                return;
-            }
-
+            if (!token || !userData) { window.location.href = '/'; return; }
             try {
                 user = JSON.parse(userData);
-                if (user.role !== 'student') {
-                    window.location.href = '/';
-                    return;
-                }
+                if (user.role !== 'student') { window.location.href = '/'; return; }
                 document.getElementById('studentName').textContent = user.name;
-            } catch (error) {
+            } catch {
                 localStorage.removeItem('token');
                 localStorage.removeItem('user');
                 window.location.href = '/';
@@ -343,243 +754,171 @@
         }
 
         function initializeSocket() {
-            socket = io();
-            socket.emit('join_room', { role: 'student' });
-
-            socket.on('request_updated', function (request) {
-                if (request.student_id === user.id) {
-                    loadRequests();
-                }
+            socket = io({ auth: { token: localStorage.getItem('token') } });
+            socket.on('request_updated', request => {
+                if (request.student_id === user.id) loadRequests();
             });
         }
 
         async function loadFacultyMembers() {
             try {
-                const response = await fetch('/api/faculty', {
-                    headers: {
-                        'Authorization': `Bearer ${localStorage.getItem('token')}`
-                    }
+                const res = await fetch('/api/faculty', {
+                    headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
                 });
-
-                if (response.ok) {
-                    const faculty = await response.json();
-                    const facultySelect = document.getElementById('faculty');
-
-                    facultySelect.innerHTML = '<option value="">Choose a faculty member...</option>';
-                    faculty.forEach(member => {
-                        const option = document.createElement('option');
-                        option.value = member.id;
-                        option.textContent = member.name;
-                        facultySelect.appendChild(option);
-                    });
-                } else {
-                    console.error('Failed to load faculty members');
-                }
-            } catch (error) {
-                console.error('Error loading faculty members:', error);
-            }
+                if (!res.ok) return;
+                const faculty = await res.json();
+                const sel = document.getElementById('faculty');
+                sel.innerHTML = '<option value="">Choose a faculty member...</option>';
+                faculty.forEach(m => {
+                    const o = document.createElement('option');
+                    o.value = m.id; o.textContent = m.name;
+                    sel.appendChild(o);
+                });
+            } catch (e) { console.error(e); }
         }
 
         async function loadRequestCategories() {
             try {
-                const response = await fetch('/api/categories', {
-                    headers: {
-                        'Authorization': `Bearer ${localStorage.getItem('token')}`
-                    }
+                const res = await fetch('/api/categories', {
+                    headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
                 });
-
-                if (response.ok) {
-                    const categories = await response.json();
-                    const categorySelect = document.getElementById('category');
-
-                    categorySelect.innerHTML = '<option value="">Select request category...</option>';
-                    categories.forEach(category => {
-                        const option = document.createElement('option');
-                        option.value = category.id;
-                        option.textContent = `${category.name} - ${category.description}`;
-                        categorySelect.appendChild(option);
-                    });
-                } else {
-                    console.error('Failed to load request categories');
-                }
-            } catch (error) {
-                console.error('Error loading request categories:', error);
-            }
+                if (!res.ok) return;
+                const cats = await res.json();
+                const sel = document.getElementById('category');
+                sel.innerHTML = '<option value="">Select request category...</option>';
+                cats.forEach(c => {
+                    const o = document.createElement('option');
+                    o.value = c.id; o.textContent = `${c.name} — ${c.description}`;
+                    sel.appendChild(o);
+                });
+            } catch (e) { console.error(e); }
         }
 
         function showAlert(message, type = 'danger') {
-            const alertContainer = document.getElementById('alertContainer');
-            alertContainer.innerHTML = `
-                <div class="alert alert-${type} alert-dismissible fade show" role="alert">
-                    <i class="fas fa-${type === 'danger' ? 'exclamation-triangle' : 'check-circle'} me-2"></i>
+            document.getElementById('alertContainer').innerHTML = `
+                <div class="custom-alert alert-${type}">
+                    <i class="fas fa-${type === 'danger' ? 'exclamation-circle' : 'check-circle'}"></i>
                     ${message}
-                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-                </div>
-            `;
+                </div>`;
         }
-        // Show loading state on submit button
-        function setLoading(loading) {
-            const submitBtn = document.querySelector('#requestForm button[type="submit"]');
-            const loadingSpan = submitBtn.querySelector('.loading');
-            const normalSpan = submitBtn.querySelector('.normal');
 
-            if (loading) {
-                loadingSpan.style.display = 'inline';
-                normalSpan.style.display = 'none';
-                submitBtn.disabled = true;
-            } else {
-                loadingSpan.style.display = 'none';
-                normalSpan.style.display = 'inline';
-                submitBtn.disabled = false;
-            }
+        function setLoading(loading) {
+            const btn = document.getElementById('submitBtn');
+            const spin = document.getElementById('spinner');
+            const icon = document.getElementById('submitIcon');
+            const txt = document.getElementById('submitText');
+            btn.disabled = loading;
+            spin.style.display = loading ? 'block' : 'none';
+            icon.style.display = loading ? 'none' : 'inline';
+            txt.textContent = loading ? 'Submitting...' : 'Submit Request';
         }
 
         function setupForm() {
-            const form = document.getElementById('requestForm');
-            form.addEventListener('submit', async (e) => {
+            document.getElementById('requestForm').addEventListener('submit', async e => {
                 e.preventDefault();
-
-                const formData = new FormData(form);
-
-                // Validate required fields
-                const reason = formData.get('reason');
-                const dateTime = formData.get('dateTime');
-                const facultyId = formData.get('faculty');
-                const categoryId = formData.get('category');
-                const duration = formData.get('duration');
-
-                if (!reason || !dateTime || !facultyId || !categoryId || !duration) {
-                    showAlert('Please fill in all required fields (Category, Reason, Date & Time, Duration, and Faculty Selection)');
-                    setLoading(false);
+                const formData = new FormData(e.target);
+                if (!formData.get('reason') || !formData.get('dateTime') ||
+                    !formData.get('faculty') || !formData.get('category') || !formData.get('duration')) {
+                    showAlert('Please fill in all required fields.');
                     return;
                 }
-                // Validate file size (max 5MB)
                 setLoading(true);
-
                 try {
-                    const response = await fetch('/api/requests', {
+                    const res = await fetch('/api/requests', {
                         method: 'POST',
-                        headers: {
-                            'Authorization': `Bearer ${localStorage.getItem('token')}`
-                        },
+                        headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` },
                         body: formData
                     });
-
-                    const data = await response.json();
-
-                    if (response.ok) {
+                    const data = await res.json();
+                    if (res.ok) {
                         showAlert('Request submitted successfully!', 'success');
-                        form.reset();
+                        e.target.reset();
                         loadRequests();
                     } else {
-                        showAlert(data.error || 'Failed to submit request');
+                        showAlert(data.error || 'Failed to submit request.');
                     }
-                } catch (error) {
-                    console.error('Submit error:', error);
+                } catch {
                     showAlert('Network error. Please try again.');
                 } finally {
                     setLoading(false);
                 }
             });
         }
-        // Load student's requests and update statistics
+
         async function loadRequests() {
             try {
-                const response = await fetch('/api/student/requests', {
-                    headers: {
-                        'Authorization': `Bearer ${localStorage.getItem('token')}`
-                    }
+                const res = await fetch('/api/student/requests', {
+                    headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
                 });
-
-                if (response.ok) {
-                    const requests = await response.json();
-                    displayRequests(requests);
-                    updateStatistics(requests);
-                } else {
-                    throw new Error('Failed to load requests');
-                }
-            } catch (error) {
-                console.error('Load requests error:', error);
+                if (!res.ok) throw new Error();
+                const requests = await res.json();
+                displayRequests(requests);
+                updateStatistics(requests);
+            } catch {
                 document.getElementById('requestsContainer').innerHTML = `
-                    <div class="alert alert-danger">
-                        <i class="fas fa-exclamation-triangle me-2"></i>
-                        Failed to load requests. Please refresh the page.
-                    </div>
-                `;
+                    <div class="custom-alert alert-danger" style="margin:0">
+                        <i class="fas fa-exclamation-circle"></i>
+                        Failed to load requests. Please refresh.
+                    </div>`;
             }
         }
 
-        function displayRequests(requests) {
-            const container = document.getElementById('requestsContainer');
+        // Reasons and faculty comments are user-entered, so they are escaped before being placed in the page
+        function escapeHtml(value) {
+            return String(value ?? '').replace(/[&<>"']/g, ch => ({
+                '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+            })[ch]);
+        }
 
-            if (requests.length === 0) {
-                container.innerHTML = `
-                    <div class="no-requests">
+        function statusClass(status) {
+            return status.toLowerCase().replace(/\s+/g, '-');
+        }
+
+        function badgeClass(status) {
+            const s = statusClass(status);
+            return `badge-${s}`;
+        }
+
+        function displayRequests(requests) {
+            const c = document.getElementById('requestsContainer');
+            if (!requests.length) {
+                c.innerHTML = `
+                    <div class="empty-state">
                         <i class="fas fa-inbox"></i>
-                        <h5>No requests yet</h5>
-                        <p>Submit your first permission request using the form above.</p>
-                    </div>
-                `;
+                        <h6>No requests yet</h6>
+                        <p>Submit your first permission request using the form.</p>
+                    </div>`;
                 return;
             }
-
-            container.innerHTML = requests.map(request => `
-                <div class="request-card ${request.status.toLowerCase().replace(' ', '-')}">
-                    <div class="d-flex justify-content-between align-items-start mb-2">
-                        <h6 class="mb-0">Request #${request.id}</h6>
-                        <span class="status-badge status-${request.status.toLowerCase().replace(' ', '-')}">
-                            ${request.status}
-                        </span>
+            c.innerHTML = requests.map(r => `
+                <div class="request-item ${statusClass(r.status)}">
+                    <div class="req-header">
+                        <div class="req-id"><i class="fas fa-hashtag" style="opacity:0.5;font-size:0.7rem"></i> Request ${r.id}</div>
+                        <span class="status-badge ${badgeClass(r.status)}">${escapeHtml(r.status)}</span>
                     </div>
-                    <p class="text-muted mb-2">${request.reason}</p>
-                    <div class="row">
-                        <div class="col-md-6">
-                            <small class="text-muted">
-                                <i class="fas fa-calendar me-1"></i>
-                                ${new Date(request.date_time).toLocaleString()}
-                            </small>
-                        </div>
-                        <div class="col-md-6">
-                            <small class="text-muted">
-                                <i class="fas fa-clock me-1"></i>
-                                Submitted ${new Date(request.created_at).toLocaleDateString()}
-                            </small>
-                        </div>
+                    <div class="req-reason">${escapeHtml(r.reason)}</div>
+                    <div class="req-meta">
+                        <span><i class="fas fa-calendar-alt"></i>${new Date(r.date_time).toLocaleString()}</span>
+                        <span><i class="fas fa-clock"></i>Submitted ${new Date(r.created_at).toLocaleDateString()}</span>
                     </div>
-                    ${request.file_path ? `
-                        <div class="file-info">
-                            <i class="fas fa-paperclip me-1"></i>
-                            <a href="/${request.file_path}" target="_blank" class="text-decoration-none">
-                                View attached file
-                            </a>
-                        </div>
-                    ` : ''}
-                    ${request.faculty_comment ? `
-                        <div class="mt-2 p-2 bg-light rounded">
-                            <small class="text-muted">
-                                <strong>Faculty Comment:</strong> ${request.faculty_comment}
-                            </small>
-                        </div>
-                    ` : ''}
+                    ${r.file_path ? `
+                        <a class="req-file" href="/${escapeHtml(r.file_path)}" target="_blank" rel="noopener">
+                            <i class="fas fa-paperclip"></i> View attached file
+                        </a>` : ''}
+                    ${r.faculty_comment ? `
+                        <div class="req-comment">
+                            <strong>Faculty:</strong> ${escapeHtml(r.faculty_comment)}
+                        </div>` : ''}
                 </div>
             `).join('');
         }
 
         function updateStatistics(requests) {
-            const stats = {
-                pending: 0,
-                approved: 0,
-                rejected: 0,
-                'need-more-info': 0
-            };
-
-            requests.forEach(request => {
-                const status = request.status.toLowerCase().replace(' ', '-');
-                if (stats.hasOwnProperty(status)) {
-                    stats[status]++;
-                }
+            const stats = { pending: 0, approved: 0, rejected: 0, 'need-more-info': 0 };
+            requests.forEach(r => {
+                const s = statusClass(r.status);
+                if (s in stats) stats[s]++;
             });
-
             document.getElementById('pendingCount').textContent = stats.pending;
             document.getElementById('approvedCount').textContent = stats.approved;
             document.getElementById('rejectedCount').textContent = stats.rejected;
