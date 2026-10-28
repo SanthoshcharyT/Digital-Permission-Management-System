@@ -3,8 +3,6 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const multer = require('multer');
 const path = require('path');
-const http = require('http');
-const socketIo = require('socket.io');
 const cors = require('cors');
 const config = require('./config');
 
@@ -21,39 +19,37 @@ if (!config.database.url) {
 const pool = require('./db');
 
 const app = express();
-const server = http.createServer(app);
-const io = socketIo(server, {
-  cors: {
-    origin: "*",
-    methods: ["GET", "POST"]
-  }
-});
+
+// Socket.IO only runs on a long-lived server (`npm start`). On Vercel's serverless
+// functions there is no io, so notifications are skipped and the pages poll instead.
+let io = null;
+const notify = (room, event, payload) => {
+  if (io) io.to(room).emit(event, payload);
+};
 
 // Middleware
 app.use(cors());
 app.use(express.json());
 app.use(express.static('public'));
-app.use('/uploads', express.static('uploads'));
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
-// Create uploads directory if it doesn't exist
-const fs = require('fs');
-if (!fs.existsSync('uploads')) {
-  fs.mkdirSync('uploads');
-}
-
-// Multer configuration for file uploads
-const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    cb(null, 'uploads/');
-  },
-  filename: function (req, file, cb) {
-    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
-    cb(null, file.fieldname + '-' + uniqueSuffix + path.extname(file.originalname));
+// Uploaded files are stored in the database (serverless hosts have no persistent disk)
+// and served at /uploads/<name>, the same path older disk-stored files use.
+app.get('/uploads/:name', async (req, res, next) => {
+  try {
+    const { rows } = await pool.query('SELECT data FROM request_files WHERE name = $1', [req.params.name]);
+    if (rows.length === 0) {
+      return res.status(404).send('File not found');
+    }
+    res.set('X-Content-Type-Options', 'nosniff');
+    res.type(path.extname(req.params.name)).send(rows[0].data);
+  } catch (error) {
+    next(error);
   }
 });
 
 const upload = multer({
-  storage: storage,
+  storage: multer.memoryStorage(),
   limits: {
     fileSize: 5 * 1024 * 1024 // 5MB limit
   },
@@ -179,7 +175,13 @@ app.post('/api/requests', authenticateToken, upload.single('file'), async (req, 
       return res.status(400).json({ error: 'Invalid faculty selection' });
     }
 
-    const filePath = req.file ? req.file.path : null;
+    let filePath = null;
+    if (req.file) {
+      const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+      const fileName = req.file.fieldname + '-' + uniqueSuffix + path.extname(req.file.originalname).toLowerCase();
+      await pool.query('INSERT INTO request_files (name, data) VALUES ($1, $2)', [fileName, req.file.buffer]);
+      filePath = 'uploads/' + fileName;
+    }
 
     const { rows: inserted } = await pool.query(
       'INSERT INTO requests (student_id, reason, date_time, file_path, faculty_id, category_id, expected_duration_days) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING id',
@@ -188,7 +190,7 @@ app.post('/api/requests', authenticateToken, upload.single('file'), async (req, 
     const requestId = inserted[0].id;
 
     // Emit real-time update to specific faculty member
-    io.to(`faculty_${facultyId}`).emit('new_request', {
+    notify(`faculty_${facultyId}`, 'new_request', {
       id: requestId,
       student_id: studentId,
       student_name: req.user.name,
@@ -284,7 +286,7 @@ app.put('/api/requests/:id/status', authenticateToken, async (req, res) => {
     `, [id]);
 
     // Emit real-time update only to the student who owns the request
-    io.to(`student_${updatedRequest[0].student_id}`).emit('request_updated', updatedRequest[0]);
+    notify(`student_${updatedRequest[0].student_id}`, 'request_updated', updatedRequest[0]);
 
     res.json({ message: 'Request status updated successfully' });
   } catch (error) {
@@ -337,33 +339,6 @@ app.get('/api/categories', authenticateToken, async (req, res) => {
   }
 });
 
-// Socket.IO authentication: identity comes from the JWT, not from the client
-io.use((socket, next) => {
-  const token = socket.handshake.auth && socket.handshake.auth.token;
-  if (!token) {
-    return next(new Error('Access token required'));
-  }
-  jwt.verify(token, config.jwt.secret, (err, user) => {
-    if (err) {
-      return next(new Error('Invalid or expired token'));
-    }
-    socket.user = user;
-    next();
-  });
-});
-
-// Socket.IO connection handling
-io.on('connection', (socket) => {
-  console.log('User connected:', socket.id);
-
-  // Each user joins a private room for targeted notifications
-  socket.join(`${socket.user.role}_${socket.user.id}`);
-
-  socket.on('disconnect', () => {
-    console.log('User disconnected:', socket.id);
-  });
-});
-
 // Serve static files
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'index.html'));
@@ -388,9 +363,50 @@ app.use((error, req, res, next) => {
   res.status(500).json({ error: 'Internal server error' });
 });
 
-// Start server
-const PORT = config.port || 3000;
-server.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
-  console.log(`Visit http://localhost:${PORT} to access the application`);
-});
+module.exports = app;
+
+// Start a long-lived server when run directly (`npm start`); Vercel imports the app instead
+if (require.main === module) {
+  const http = require('http');
+  const socketIo = require('socket.io');
+  const server = http.createServer(app);
+  io = socketIo(server, {
+    cors: {
+      origin: "*",
+      methods: ["GET", "POST"]
+    }
+  });
+
+  // Socket.IO authentication: identity comes from the JWT, not from the client
+  io.use((socket, next) => {
+    const token = socket.handshake.auth && socket.handshake.auth.token;
+    if (!token) {
+      return next(new Error('Access token required'));
+    }
+    jwt.verify(token, config.jwt.secret, (err, user) => {
+      if (err) {
+        return next(new Error('Invalid or expired token'));
+      }
+      socket.user = user;
+      next();
+    });
+  });
+
+  // Socket.IO connection handling
+  io.on('connection', (socket) => {
+    console.log('User connected:', socket.id);
+
+    // Each user joins a private room for targeted notifications
+    socket.join(`${socket.user.role}_${socket.user.id}`);
+
+    socket.on('disconnect', () => {
+      console.log('User disconnected:', socket.id);
+    });
+  });
+
+  const PORT = config.port || 3000;
+  server.listen(PORT, () => {
+    console.log(`Server running on port ${PORT}`);
+    console.log(`Visit http://localhost:${PORT} to access the application`);
+  });
+}

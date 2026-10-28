@@ -754,6 +754,8 @@
         }
 
         function initializeSocket() {
+            // No Socket.IO server on serverless hosts (Vercel): poll for status changes instead
+            if (typeof io === 'undefined') { setInterval(loadRequests, 15000); return; }
             socket = io({ auth: { token: localStorage.getItem('token') } });
             socket.on('request_updated', request => {
                 if (request.student_id === user.id) loadRequests();

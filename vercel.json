@@ -1,0 +1,10 @@
+{
+  "framework": null,
+  "outputDirectory": "public",
+  "rewrites": [
+    { "source": "/student", "destination": "/student.html" },
+    { "source": "/faculty", "destination": "/faculty.html" },
+    { "source": "/api/(.*)", "destination": "/api" },
+    { "source": "/uploads/(.*)", "destination": "/api" }
+  ]
+}

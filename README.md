@@ -2,6 +2,12 @@
 
 A comprehensive full-stack web application for managing college/university permission requests between students and faculty.
 
+## 🌐 Live Demo
+
+**[https://digital-permission-system.vercel.app](https://digital-permission-system.vercel.app)**
+
+Deployed on Vercel with a Supabase (PostgreSQL) database. Sign in with the [demo credentials](#demo-credentials) below.
+
 ## Features
 
 ### 🎓 Student Features
@@ -70,7 +76,7 @@ Create the tables (safe to run more than once):
 ```bash
 npm run db:setup
 ```
-This applies `supabase/schema.sql`: the `users`, `request_categories` and `requests` tables, the default categories, and Row Level Security so the tables are not readable through Supabase's public REST API.
+This applies `supabase/schema.sql`: the `users`, `request_categories`, `requests` and `request_files` tables, the default categories, and Row Level Security so the tables are not readable through Supabase's public REST API.
 
 ### 5. Start the Application
 ```bash
@@ -87,6 +93,25 @@ Open your browser and navigate to:
 http://localhost:3000
 ```
 
+## Deploying to Vercel
+
+The project is ready for Vercel: static pages are served from `public/`, and `/api/*` and `/uploads/*` are handled by the Express app through [api/index.js](api/index.js) (see [vercel.json](vercel.json)).
+
+```bash
+npm run db:setup                               # create the tables in Supabase
+npx vercel login
+npx vercel link
+npx vercel env add DATABASE_URL production     # Supabase pooler string, port 6543
+npx vercel env add JWT_SECRET production
+npx vercel --prod
+```
+
+For `DATABASE_URL` on Vercel, use Supabase's **transaction pooler** (port `6543`), which suits serverless functions.
+
+Differences from running with `npm start`:
+- Vercel has no Socket.IO server, so the dashboards refresh requests every 15 seconds instead of instantly.
+- Uploaded files are stored in the database (`request_files` table), since serverless functions have no persistent disk. Vercel limits request bodies to about 4.5MB.
+
 ## Demo Credentials
 
 ### Faculty Members (Password: 12345)
@@ -100,11 +125,12 @@ http://localhost:3000
 
 ## Database Schema
 
-The full schema is in [supabase/schema.sql](supabase/schema.sql). It has three tables:
+The full schema is in [supabase/schema.sql](supabase/schema.sql). It has four tables:
 
 - **users**: id, name, email (unique), password (bcrypt hash), role (`student` or `faculty`), created_at
 - **request_categories**: id, name, description, created_at
 - **requests**: id, student_id, faculty_id, category_id, reason, date_time, expected_duration_days, file_path, status (`Pending`, `Approved`, `Rejected` or `Need More Info`), faculty_comment, created_at, updated_at (kept current by a trigger)
+- **request_files**: name, data (file contents), created_at — attachments served at `/uploads/<name>`
 
 ## API Endpoints
 
@@ -129,8 +155,10 @@ digital-permission-system/
 │   ├── index.html          # Login page
 │   ├── student.html        # Student dashboard
 │   └── faculty.html        # Faculty dashboard
-├── uploads/                # File upload directory
+├── api/index.js           # Vercel serverless entry point
+├── uploads/                # Older disk-stored uploads (local only)
 ├── server.js              # Main server file
+├── vercel.json            # Vercel routing
 ├── config.js              # Configuration
 ├── db.js                  # Postgres (Supabase) connection pool
 ├── supabase/schema.sql    # Database schema
@@ -142,7 +170,7 @@ digital-permission-system/
 ## Features in Detail
 
 ### Real-time Updates
-The application uses Socket.IO to provide real-time communication:
+When run with `npm start`, the application uses Socket.IO to provide real-time communication (on Vercel the dashboards poll every 15 seconds instead):
 - Students see status updates immediately
 - Faculty get notified of new requests instantly
 - No page refresh required for updates
@@ -150,7 +178,7 @@ The application uses Socket.IO to provide real-time communication:
 ### File Upload
 - Supports multiple file formats (PDF, DOC, DOCX, JPG, PNG, GIF)
 - 5MB file size limit
-- Files stored in `/uploads` directory
+- Files stored in the database and served at `/uploads/<name>`
 - Secure file handling with validation
 
 ### Security Features
@@ -184,7 +212,7 @@ The application uses Socket.IO to provide real-time communication:
 
 ### Common Issues
 1. **Database Connection Error**: Check `DATABASE_URL` and the database password in Supabase; if your network blocks IPv6, use the Session pooler connection string
-2. **File Upload Issues**: Ensure `/uploads` directory exists and is writable
+2. **File Upload Issues**: Run `npm run db:setup` so the `request_files` table exists
 3. **Socket.IO Connection**: Check if port 3000 is available
 4. **Authentication Issues**: Verify JWT secret in config
 

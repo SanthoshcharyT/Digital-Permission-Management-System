@@ -33,6 +33,13 @@ CREATE TABLE IF NOT EXISTS requests (
     updated_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
+-- Files attached to requests, served by the app at /uploads/<name>
+CREATE TABLE IF NOT EXISTS request_files (
+    name VARCHAR(255) PRIMARY KEY,
+    data BYTEA NOT NULL,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
 CREATE INDEX IF NOT EXISTS idx_requests_student ON requests(student_id);
 CREATE INDEX IF NOT EXISTS idx_requests_faculty ON requests(faculty_id);
 
@@ -54,6 +61,7 @@ CREATE TRIGGER requests_updated_at BEFORE UPDATE ON requests
 ALTER TABLE users ENABLE ROW LEVEL SECURITY;
 ALTER TABLE request_categories ENABLE ROW LEVEL SECURITY;
 ALTER TABLE requests ENABLE ROW LEVEL SECURITY;
+ALTER TABLE request_files ENABLE ROW LEVEL SECURITY;
 
 -- Default categories for a fresh database
 INSERT INTO request_categories (name, description)

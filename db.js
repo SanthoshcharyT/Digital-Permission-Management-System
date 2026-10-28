@@ -5,7 +5,8 @@ const config = require('./config');
 const pool = new Pool({
   connectionString: config.database.url,
   ssl: config.database.ssl ? { rejectUnauthorized: false } : false,
-  max: 10
+  // Each Vercel function instance gets its own pool, so keep it to one connection there
+  max: process.env.VERCEL ? 1 : 10
 });
 
 module.exports = pool;
